@@ -9,8 +9,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.MainThreadSubscription;
 
-import static com.laimiux.rxactivity.internal.Preconditions.checkUiThread;
-
 class ActivityLifecycleOnSubscribe implements Observable.OnSubscribe<LifecycleEvent> {
   private final Application app;
 
