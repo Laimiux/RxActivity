@@ -9,6 +9,8 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.MainThreadSubscription;
 
+import static rx.android.MainThreadSubscription.verifyMainThread;
+
 class ActivityLifecycleOnSubscribe implements Observable.OnSubscribe<LifecycleEvent> {
   private final Application app;
 
@@ -17,7 +19,7 @@ class ActivityLifecycleOnSubscribe implements Observable.OnSubscribe<LifecycleEv
   }
 
   @Override public void call(final Subscriber<? super LifecycleEvent> subscriber) {
-    MainThreadSubscription.verifyMainThread();
+    verifyMainThread();
 
     final Application.ActivityLifecycleCallbacks callbacks = new Application.ActivityLifecycleCallbacks() {
       @Override public void onActivityCreated(Activity activity, Bundle savedInstanceState) {

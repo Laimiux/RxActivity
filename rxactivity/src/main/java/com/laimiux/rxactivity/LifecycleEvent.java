@@ -19,14 +19,14 @@ public abstract class LifecycleEvent {
     return kind;
   }
 
-  public static enum Kind {
+  public enum Kind {
     CREATE,
     START,
     RESUME,
     PAUSE,
     SAVE_INSTANCE,
     STOP,
-    DESTROY;
+    DESTROY
   }
 
 }
