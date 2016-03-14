@@ -18,6 +18,7 @@ import rx.Observer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class RxActivityTest {
@@ -51,6 +52,46 @@ public class RxActivityTest {
     verifier.nextWas(LifecycleEvent.Kind.DESTROY);
   }
 
+  @Test
+  public void trackActivity_ignoresOtherActivities() {
+    final Activity activity = Robolectric.buildActivity(Activity.class).get();
+
+    final Observer<LifecycleEvent> observer = mock(Observer.class);
+    RxActivity.trackActivity(activity).subscribe(observer);
+
+    ActivityController<Activity> current = Robolectric.buildActivity(Activity.class);
+    current.create();
+    current.start();
+    current.resume();
+    current.pause();
+    current.stop();
+    current.destroy();
+
+    verifyZeroInteractions(observer);
+  }
+
+  @Test
+  public void trackActivityEvent_ignoresOtherEvents() {
+    ActivityController<Activity> controller = Robolectric.buildActivity(Activity.class);
+
+    final Activity activity = controller.get();
+
+    final Observer<LifecycleEvent> observer = mock(Observer.class);
+    RxActivity.trackActivityEvent(activity, LifecycleEvent.Kind.CREATE).subscribe(observer);
+
+
+
+    final SingleActivityVerifier verifier = new SingleActivityVerifier(activity, observer);
+
+    controller.create();
+    controller.start();
+    controller.resume();
+    controller.pause();
+    controller.stop();
+    controller.destroy();
+
+    verifier.nextWas(LifecycleEvent.Kind.CREATE);
+  }
 
   static class SingleActivityVerifier {
     private final Activity activity;
